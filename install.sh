@@ -107,6 +107,10 @@ then
 	$privesc udevadm trigger
 elif (grep -E "^(Sarien|Arcada)$" /sys/class/dmi/id/product_name &> /dev/null)
 then
+	$privesc mkdir -p /etc/udev/hwdb.d/
+	$privesc cp -f configs/61-sarien-keyboard.hwdb /etc/udev/hwdb.d/
+	$privesc udevadm hwdb --update
+	$privesc udevadm trigger
 	cp -f configs/cros-sarien.conf cros.conf
 else
 	printf "By default, the top row keys will do their special function (brightness, volume, browser control, etc).\n"
