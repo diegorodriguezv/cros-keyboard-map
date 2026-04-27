@@ -111,7 +111,11 @@ then
 	$privesc cp -f configs/61-sarien-keyboard.hwdb /etc/udev/hwdb.d/
 	$privesc udevadm hwdb --update
 	$privesc udevadm trigger
-	cp -f configs/cros-sarien.conf cros.conf
+	printf "By default, the top row keys will do their special function (brightness, volume, browser control, etc).\n"
+	printf "Holding the fn key will make the top row keys act like fn keys (f1, f2, f3, etc).\n"
+	printf "Would you like to invert this? (y/N) "
+	read -r INVERT
+	[[ $INVERT =~ ^[Yy]$ ]] && cp -f configs/cros-sarien-inv.conf cros.conf || cp -f configs/cros-sarien.conf cros.conf
 else
 	printf "By default, the top row keys will do their special function (brightness, volume, browser control, etc).\n"
 	printf "Holding the search key will make the top row keys act like fn keys (f1, f2, f3, etc).\n"
