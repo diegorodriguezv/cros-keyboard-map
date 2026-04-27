@@ -45,15 +45,15 @@ echo "Installing, this may take some time...."
 
 if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
 	build_keyd=1
-  # if keyd isnt installed
+	# if keyd isnt installed
 
-  # Debian-based distros and Fedora don't have keyd in the repos, ask the user to compile it from source.
-  if [ "distro" = "fedora" ] && [ ! "$FEDORA_HAS_KEYD" = "1" ] || [ "$distro" = "deb" ]; then
-  	echo "This script can compile keyd for you or you can choose to get it from another source."
-  	printf "Compile keyd? (Y/n) "
-  	read -r COMPKEYD
+	# Debian-based distros and Fedora don't have keyd in the repos, ask the user to compile it from source.
+	if [ "distro" = "fedora" ] && [ ! "$FEDORA_HAS_KEYD" = "1" ] || [ "$distro" = "deb" ]; then
+		echo "This script can compile keyd for you or you can choose to get it from another source."
+		printf "Compile keyd? (Y/n) "
+		read -r COMPKEYD
 		[[ $COMPKEYD =~ ^[Nn]$ ]] && build_keyd=0
-  fi
+	fi
 
 	if [ "$build_keyd" = "1" ]; then
 		echo "Installing keyd dependencies"
@@ -87,7 +87,7 @@ if ! which keyd &>/dev/null && [ "$distro" != "nixos" ] ; then
 				$privesc apk add --no-interactive keyd &>> pkg.log
 				;;
 			void)
-		  	$privesc xbps-install -S keyd -y &>> pkg.log
+				$privesc xbps-install -S keyd -y &>> pkg.log
 				;;
 			fedora)
 				$privesc dnf4 install -y keyd &>> pkg.log
@@ -127,29 +127,29 @@ $privesc cp -f cros.conf /etc/keyd
 
 echo "Enabling keyd"
 case $distro in
-  alpine)
+	alpine)
 		# Chimera uses apk like alpine but uses dinit instead of openrc
 		if [ -f /usr/bin/dinitctl ]; then
 			$privesc dinitctl start keyd
 			$privesc dinitctl enable keyd
 		else
-      $privesc rc-update add keyd
-      $privesc rc-service keyd restart
+			$privesc rc-update add keyd
+			$privesc rc-service keyd restart
 		fi
 		;;
 	void)
 		if [ -f /usr/bin/sv ]; then
-	    $privesc ln -s /etc/sv/keyd /var/service
+			$privesc ln -s /etc/sv/keyd /var/service
 			$privesc sv enable keyd
 			$privesc sv start keyd
 		else
-	    echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
-		  echo "I'M OUTTA HERE!"
-		  exit 1
+			echo "This script can only be used for Void Linux using 'runit' init system. Other init system on Void Linux are currently unsupported."
+			echo "I'M OUTTA HERE!"
+			exit 1
 		fi
 		;;
-  *)
-    $privesc systemctl enable keyd
+	*)
+		$privesc systemctl enable keyd
 		$privesc systemctl restart keyd
 		;;
 esac
@@ -157,9 +157,9 @@ esac
 echo "Installing libinput configuration"
 $privesc mkdir -p /etc/libinput
 if [ -f /etc/libinput/local-overrides.quirks ]; then
-  cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
+	cat $ROOT/local-overrides.quirks | $privesc tee -a /etc/libinput/local-overrides.quirks > /dev/null
 else
-  $privesc cp -f $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
+	$privesc cp -f $ROOT/local-overrides.quirks /etc/libinput/local-overrides.quirks
 fi
 
 echo "Done"
